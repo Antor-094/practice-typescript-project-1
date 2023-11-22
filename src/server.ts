@@ -9,7 +9,7 @@ async function main() {
       console.log(`Example app listening on port ${config.PORT}`);
     });
   } catch (error) {
-    console.log(error);
+    console.error('Error connecting to MongoDB:', error);
   }
 }
 

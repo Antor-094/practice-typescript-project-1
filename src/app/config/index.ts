@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -7,3 +8,4 @@ export default {
   PORT: process.env.PORT,
   DATABASE_URL: process.env.DATABASE_URL,
 };
+// console.log(process.cwd())
