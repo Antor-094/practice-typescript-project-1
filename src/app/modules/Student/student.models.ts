@@ -9,6 +9,7 @@ import {
 import validator from 'validator';
 import bcrypt from 'bcrypt'
 import config from '../../config';
+// import {  boolean } from 'joi';
 const usernameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
@@ -132,6 +133,10 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     enum: ['active', 'blocked'],
     default: 'active',
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 //pre save middleware/hooks
@@ -139,12 +144,37 @@ const studentSchema = new Schema<TStudent, StudentModel>({
 studentSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this
-  user.password=await bcrypt.hash(user.password,Number(config.BCRYPT_SALT_ROUNDS))
+  user.password = await bcrypt.hash(user.password, Number(config.BCRYPT_SALT_ROUNDS))
   next()
 });
 
-studentSchema.post('save', function () {});
+studentSchema.post('save', function (doc, next) {
 
+  doc.password = ''
+  next()
+});
+
+// implementing query middleware
+studentSchema.pre('find', function (next) {
+
+  this.find({isDeleted:{$ne:true}})
+
+  next()
+})
+studentSchema.pre('findOne', function (next) {
+
+  this.find({isDeleted:{$ne:true}})
+
+  next()
+})
+
+
+studentSchema.pre('aggregate', function (next) {
+
+  this.pipeline().unshift({$match:{isDeleted:{$ne:true}}})
+
+  next()
+})
 // creating a custom static method
 
 studentSchema.statics.isUserExists = async function (id: string) {

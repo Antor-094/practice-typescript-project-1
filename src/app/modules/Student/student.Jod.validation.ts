@@ -52,6 +52,7 @@ const StudentJodValidateSchema = z.object({
   localGuardian: TLocalGuardianSchema,
   profileImage: z.string().optional(),
   isActive: z.enum(['active', 'blocked']).default('active'),
+  isDeleted: z.boolean().default(false).optional()
 });
 
 export default StudentJodValidateSchema;
