@@ -1,19 +1,30 @@
-import { Student } from './student.interface';
-import { StudentModel } from './student.models';
+import { TStudent } from './student.interface';
+import { Student } from './student.models';
 
-const createStudentIntoDB = async (student: Student) => {
-  const result = await StudentModel.create(student);
+const createStudentIntoDB = async (studentData: TStudent) => {
+  //custom static method call korram
+  if (await Student.isUserExists(studentData.id)) {
+    throw new Error('User already exists man');
+  }
+  const result = await Student.create(studentData); //build in static method
+
+  // for creating instance method
+  // const student = new Student(studentData)
+  // if(await student.isUserExists(studentData.id)){
+  //   throw new Error("User already exists")
+  // }
+  // const result = await student.save();//build in instance method
   return result;
 };
 
 const getAllStudentFromDB = async () => {
-  const result = await StudentModel.find();
+  const result = await Student.find();
   return result;
 };
 const getSingleStudentFromDB = async (id: string) => {
   console.log({ id });
 
-  const result = await StudentModel.findOne({ _id: new Object(id) });
+  const result = await Student.findOne({ _id: new Object(id) });
   return result;
 };
 export const StudentServices = {
