@@ -7,8 +7,7 @@ import {
   TUserName,
 } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt'
-import config from '../../config';
+
 // import {  boolean } from 'joi';
 const usernameSchema = new Schema<TUserName>({
   firstName: {
@@ -72,12 +71,12 @@ const TlocalGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: true, unique: true },
-  password: {
-    type: String,
-    required: [true, 'password is required'],
-    trim: true,
-    maxlength: [20, 'password can not be more then 20 characters'],
+  id: { type: String, required: [true, 'Id is requied'], unique: true },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'Use Id is required'],
+    unique: true,
+    ref: 'User'
   },
   name: {
     type: usernameSchema,
@@ -128,47 +127,29 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     type: String,
     required: [true, 'profileImage is required!!'],
   },
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
-  },
+
   isDeleted: {
     type: Boolean,
     default: false,
   },
 },
-{
-  toJSON:{
-    virtuals:true
-  } 
-}
+  {
+    toJSON: {
+      virtuals: true
+    }
+  }
 );
 
 //virtual
 
 
-studentSchema.virtual('fullName').get(function(){
-  return  `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
 })
 
 
 
 
-//pre save middleware/hooks
-
-studentSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this
-  user.password = await bcrypt.hash(user.password, Number(config.BCRYPT_SALT_ROUNDS))
-  next()
-});
-
-studentSchema.post('save', function (doc, next) {
-
-  doc.password = ''
-  next()
-});
 
 
 
@@ -176,13 +157,13 @@ studentSchema.post('save', function (doc, next) {
 // implementing query middleware
 studentSchema.pre('find', function (next) {
 
-  this.find({isDeleted:{$ne:true}})
+  this.find({ isDeleted: { $ne: true } })
 
   next()
 })
 studentSchema.pre('findOne', function (next) {
 
-  this.find({isDeleted:{$ne:true}})
+  this.find({ isDeleted: { $ne: true } })
 
   next()
 })
@@ -190,7 +171,7 @@ studentSchema.pre('findOne', function (next) {
 
 studentSchema.pre('aggregate', function (next) {
 
-  this.pipeline().unshift({$match:{isDeleted:{$ne:true}}})
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } })
 
   next()
 })

@@ -36,7 +36,6 @@ const TLocalGuardianSchema = z.object({
 
 const StudentJodValidateSchema = z.object({
   id: z.string(),
-  password: z.string().max(20),
   name: TUserNameSchema,
   gender: z.enum(['male', 'female', 'other']),
   dateOfBirth: z.string(),
