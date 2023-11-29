@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.services';
 
 
 
-const getAllStudent = async (req: Request, res: Response) => {
+const getAllStudent = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const result = await StudentServices.getAllStudentFromDB();
     res.status(200).json({
@@ -11,16 +11,12 @@ const getAllStudent = async (req: Request, res: Response) => {
       message: 'All the Student get successfully',
       data: result,
     });
-  } catch (error:any) {
-    res.status(500).json({
-        success: false,
-        message: error.message || 'Something went wrong',
-        error: error,
-      });
+  } catch (error) {
+    next(error)
   }
 };
 
-const getAsingleStudent = async (req: Request, res: Response) => {
+const getAsingleStudent = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const id = req.params.studentId;
     const result = await StudentServices.getSingleStudentFromDB(id);
@@ -29,15 +25,11 @@ const getAsingleStudent = async (req: Request, res: Response) => {
       message: 'Single Student get successfully',
       data: result,
     });
-  } catch (error:any) {
-    res.status(500).json({
-        success: false,
-        message: error.message || 'Something went wrong',
-        error: error,
-      });
+  } catch (error) {
+   next(error)
   }
 };
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const id = req.params.studentId;
     const result = await StudentServices.deleteStudentFromDB(id);
@@ -46,12 +38,9 @@ const deleteStudent = async (req: Request, res: Response) => {
       message: 'Student deleted successfully',
       data: result,
     });
-  } catch (error:any) {
-    res.status(500).json({
-        success: false,
-        message: error.message || 'Something went wrong',
-        error: error,
-      });
+ 
+  } catch (error) {
+    next(error)
   }
 };
 export const StudentControllers = {

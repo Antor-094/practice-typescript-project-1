@@ -46,6 +46,7 @@ userSchema.pre('save', async function (next) {
     next()
   });
   
+  //set empty string after saving the password
   userSchema.post('save', function (doc, next) {
   
     doc.password = ''
