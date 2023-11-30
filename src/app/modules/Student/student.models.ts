@@ -70,111 +70,103 @@ const TlocalGuardianSchema = new Schema<TLocalGuardian>({
     required: [true, 'LocalTGuardian address is required!!'],
   },
 });
-const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: [true, 'Id is requied'], unique: true },
-  user: {
-    type: Schema.Types.ObjectId,
-    required: [true, 'Use Id is required'],
-    unique: true,
-    ref: 'User'
-  },
-  name: {
-    type: usernameSchema,
-    required: [true, 'Name is required!!'],
-  },
-  //union type er moton mongoose o ekta type ase enum
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female', 'other'],
-      message: '{VALUE} is not valid',
+const studentSchema = new Schema<TStudent, StudentModel>(
+  {
+    id: { type: String, required: [true, 'Id is requied'], unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'Use Id is required'],
+      unique: true,
+      ref: 'User',
     },
-    required: true,
-  },
-  dateOfBirth: { type: String, required: [true, 'dateOfBirth is required!!'] },
-  email: {
-    type: String,
-    required: [true, 'email is required!!'],
-    unique: true,
-    trim: true,
-  },
-  contactNo: { type: String, required: [true, 'contactNo is required!!'] },
-  emergencyContactNo: {
-    type: String,
-    required: [true, 'emergencyContactNo is required!!'],
-  },
-  bloodGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-  },
-  presentAddress: {
-    type: String,
-    required: [true, 'presentAddress is required!!'],
-  },
-  permanentAddress: {
-    type: String,
-    required: [true, 'permanentAddress is required!!'],
-  },
-  guardian: {
-    type: guardianSchema,
-    required: [true, 'guardian is required!!'],
-  },
-  localGuardian: {
-    type: TlocalGuardianSchema,
-    required: [true, 'localTGuardian is required!!'],
-  },
-  profileImage: {
-    type: String,
-    required: [true, 'profileImage is required!!'],
-  },
+    name: {
+      type: usernameSchema,
+      required: [true, 'Name is required!!'],
+    },
+    //union type er moton mongoose o ekta type ase enum
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female', 'other'],
+        message: '{VALUE} is not valid',
+      },
+      required: true,
+    },
+    dateOfBirth: {
+      type: String,
+      required: [true, 'dateOfBirth is required!!'],
+    },
+    email: {
+      type: String,
+      required: [true, 'email is required!!'],
+      unique: true,
+      trim: true,
+    },
+    contactNo: { type: String, required: [true, 'contactNo is required!!'] },
+    emergencyContactNo: {
+      type: String,
+      required: [true, 'emergencyContactNo is required!!'],
+    },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
+    presentAddress: {
+      type: String,
+      required: [true, 'presentAddress is required!!'],
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, 'permanentAddress is required!!'],
+    },
+    guardian: {
+      type: guardianSchema,
+      required: [true, 'guardian is required!!'],
+    },
+    localGuardian: {
+      type: TlocalGuardianSchema,
+      required: [true, 'localTGuardian is required!!'],
+    },
+    profileImage: {
+      type: String,
+      required: [true, 'profileImage is required!!'],
+    },
 
-  isDeleted: {
-    type: Boolean,
-    default: false,
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-},
   {
     toJSON: {
-      virtuals: true
-    }
-  }
+      virtuals: true,
+    },
+  },
 );
 
 //virtual
 
-
 studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
-})
-
-
-
-
-
-
-
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+});
 
 // implementing query middleware
 studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
 
-  this.find({ isDeleted: { $ne: true } })
-
-  next()
-})
+  next();
+});
 studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
 
-  this.find({ isDeleted: { $ne: true } })
-
-  next()
-})
-
+  next();
+});
 
 studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } })
-
-  next()
-})
+  next();
+});
 // creating a custom static method
 
 studentSchema.statics.isUserExists = async function (id: string) {
