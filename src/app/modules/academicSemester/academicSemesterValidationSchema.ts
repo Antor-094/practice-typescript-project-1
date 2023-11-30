@@ -1,0 +1,15 @@
+
+import { z } from 'zod';
+
+const createAcademicSemesterValidationSchema = z.object({
+  password: z
+    .string({
+      invalid_type_error: 'Password must be string',
+    })
+    .max(20, { message: 'password can not be more than 20 characters' })
+    .optional(),
+});
+
+export const academicSemesterValidations = {
+    createAcademicSemesterValidationSchema,
+};
