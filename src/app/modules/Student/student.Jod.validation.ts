@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const TUserNameSchema = z.object({
+const UserNameValidationSchema = z.object({
   firstName: z
     .string()
     .min(1)
@@ -18,7 +18,7 @@ const TUserNameSchema = z.object({
     }),
 });
 
-const TGuardianSchema = z.object({
+const GuardianValidationSchema = z.object({
   fatherName: z.string().min(1),
   fatherOccupation: z.string().min(1),
   fatherContactNo: z.string().min(1),
@@ -27,31 +27,35 @@ const TGuardianSchema = z.object({
   motherContactNo: z.string().min(1),
 });
 
-const TLocalGuardianSchema = z.object({
+const LocalGuardianValidationSchema = z.object({
   name: z.string().min(1),
   occupation: z.string().min(1),
   contactNo: z.string().min(1),
   address: z.string().min(1),
 });
 
-const StudentJodValidateSchema = z.object({
-  id: z.string(),
-  name: TUserNameSchema,
-  gender: z.enum(['male', 'female', 'other']),
-  dateOfBirth: z.string(),
-  email: z.string().email(),
-  contactNo: z.string(),
-  emergencyContactNo: z.string(),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z.string(),
-  permanentAddress: z.string(),
-  guardian: TGuardianSchema,
-  localGuardian: TLocalGuardianSchema,
-  profileImage: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']).default('active'),
-  isDeleted: z.boolean().default(false).optional(),
-});
+const CreateStudentJodValidateSchema = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: UserNameValidationSchema,
+      gender: z.enum(['male', 'female', 'other']),
+      dateOfBirth: z.date().optional(),
+      email: z.string().email(),
+      contactNo: z.string(),
+      emergencyContactNo: z.string(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string(),
+      permanentAddress: z.string(),
+      guardian: GuardianValidationSchema,
+      localGuardian: LocalGuardianValidationSchema,
+      profileImage: z.string().optional(),
+    })
+  })
+})
 
-export default StudentJodValidateSchema;
+export const studentValidations = {
+  CreateStudentJodValidateSchema
+};

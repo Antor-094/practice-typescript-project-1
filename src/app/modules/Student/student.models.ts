@@ -93,8 +93,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: true,
     },
     dateOfBirth: {
-      type: String,
-      required: [true, 'dateOfBirth is required!!'],
+      type: Date,
     },
     email: {
       type: String,
@@ -130,11 +129,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     profileImage: {
       type: String,
       required: [true, 'profileImage is required!!'],
-    },
-
-    isDeleted: {
-      type: Boolean,
-      default: false,
     },
   },
   {

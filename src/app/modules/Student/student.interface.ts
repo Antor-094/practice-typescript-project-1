@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { Date, Model, Types } from 'mongoose';
 
 // import { Schema, model, connect } from 'mongoose';
 export type TUserName = {
@@ -25,7 +25,7 @@ export type TStudent = {
   user: Types.ObjectId;
   name: TUserName;
   gender: 'male' | 'female' | 'other';
-  dateOfBirth: string;
+  dateOfBirth: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
@@ -35,7 +35,6 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImage?: string;
-  isDeleted: boolean;
 };
 //for creating static method
 
