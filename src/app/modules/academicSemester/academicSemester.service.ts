@@ -3,6 +3,7 @@ import { TAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";
 
 
+
 const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
     // Autumn code 01
     //Summer code 02
@@ -16,13 +17,19 @@ const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
     return result
 }
 
-const getAllAcademicSemesterFromDB = async()=>{
+const getAllAcademicSemesterFromDB = async () => {
 
     const result = await AcademicSemester.find()
     return result
 }
 
+const getSingleSemesterFromDB = async(id:string)=>{
+    const result = await AcademicSemester.findOne({_id:new Object(id)})
+    return result
+}
+
 export const AcademicSemesterServices = {
     createAcademicSemesterIntoDB,
-    getAllAcademicSemesterFromDB
+    getAllAcademicSemesterFromDB,
+    getSingleSemesterFromDB
 }
