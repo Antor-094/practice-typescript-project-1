@@ -28,8 +28,16 @@ const getSingleSemesterFromDB = async(id:string)=>{
     return result
 }
 
+const updateSingleSemesterFromDB = async(id:string,updatedData:TAcademicSemester)=>{
+    if (academicSemesterNameCodeMapper[updatedData.name] !== updatedData.code) {
+        throw new Error('Invalid Semester Code')
+    }
+    const result = await AcademicSemester.findByIdAndUpdate({_id:new Object(id)},updatedData,{ new: true })
+    return result
+}
 export const AcademicSemesterServices = {
     createAcademicSemesterIntoDB,
     getAllAcademicSemesterFromDB,
-    getSingleSemesterFromDB
+    getSingleSemesterFromDB,
+    updateSingleSemesterFromDB
 }
