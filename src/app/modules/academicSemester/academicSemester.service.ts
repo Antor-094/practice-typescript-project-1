@@ -28,11 +28,15 @@ const getSingleSemesterFromDB = async(id:string)=>{
     return result
 }
 
-const updateSingleSemesterFromDB = async(id:string,updatedData:TAcademicSemester)=>{
-    if (academicSemesterNameCodeMapper[updatedData.name] !== updatedData.code) {
+const updateSingleSemesterFromDB = async(id:string,payLoad:Partial<TAcademicSemester>
+)=>{
+    if (
+        payLoad.name &&
+        payLoad.code &&
+        academicSemesterNameCodeMapper[payLoad.name] !== payLoad.code) {
         throw new Error('Invalid Semester Code')
     }
-    const result = await AcademicSemester.findByIdAndUpdate({_id:new Object(id)},updatedData,{ new: true })
+    const result = await AcademicSemester.findOneAndUpdate({_id:id},payLoad,{ new: true })
     return result
 }
 export const AcademicSemesterServices = {

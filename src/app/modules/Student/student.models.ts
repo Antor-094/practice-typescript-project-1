@@ -130,6 +130,10 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: String,
       required: [true, 'profileImage is required!!'],
     },
+    admissionSemester:{
+      type:Schema.Types.ObjectId,
+      ref:'AcademicSemester'
+    }
   },
   {
     toJSON: {
