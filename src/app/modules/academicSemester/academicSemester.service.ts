@@ -1,10 +1,18 @@
+import { academicSemesterNameCodeMapper } from "./academicSemester.Constant";
 import { TAcademicSemester } from "./academicSemester.interface";
-import { academicSemester } from "./academicSemester.model";
+import { AcademicSemester } from "./academicSemester.model";
 
 
-const createAcademicSemesterIntoDB = async(payLoad:TAcademicSemester)=>{
-
-    const result = await academicSemester.create(payLoad)
+const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
+    // Autumn code 01
+    //Summer code 02
+    //Fall code 03
+    //business er logic gula service ey lekbo
+    //checking semester name ----> semester code
+    if (academicSemesterNameCodeMapper[payLoad.name] !== payLoad.code) {
+        throw new Error('Invalid Semester Code')
+    }
+    const result = await AcademicSemester.create(payLoad)
     return result
 }
 

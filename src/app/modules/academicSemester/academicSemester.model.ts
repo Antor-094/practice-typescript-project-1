@@ -7,7 +7,7 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
     {
         name: {
             type: String,
-            enum:AcademicSemesterName,
+            enum: AcademicSemesterName,
             required: true
         },
         year: {
@@ -16,23 +16,37 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
         },
         code: {
             type: String,
-            enum:AcademicSemesterCode,
+            enum: AcademicSemesterCode,
             required: true
         }
         ,
         startMonth: {
             type: String,
             enum: Months,
-            required:true
+            required: true
         },
         endMonth: {
             type: String,
             enum: Months,
-            required:true
+            required: true
         }
-    },{
-        timestamps:true
-    }
+    }, {
+    timestamps: true
+}
 )
 
-export const academicSemester = model<TAcademicSemester>('AcademicSemester',academicSemesterSchema) 
+//pre document middleware for year check. we can not create a same semester in same year two times
+
+academicSemesterSchema.pre('save', async function (next) {
+    const isSemesterExists = await AcademicSemester.findOne({
+        year:this.year,
+        name:this.name
+    })
+    if(isSemesterExists){
+        throw new Error('Semester is already exists')
+    }
+    next()
+})
+
+
+export const AcademicSemester = model<TAcademicSemester>('AcademicSemester', academicSemesterSchema) 
